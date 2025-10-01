@@ -1,0 +1,21 @@
+name: Check Artifact Registry Login
+
+on:
+  workflow_dispatch: {}   # запуск вручную из Actions
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker login to Cloud.ru Artifact Registry
+        run: |
+          echo "${{ secrets.CR_PASSWORD }}" | docker login ${{ secrets.CR_REGISTRY }} \
+            -u "${{ secrets.CR_USERNAME }}" --password-stdin
+          echo "OK: login succeeded"
+
+      # опционально: проверить push мини-образа (замени путь на свой репозиторий)
+      #- name: Build and push tiny image
+      #  run: |
+      #    echo -e "FROM busybox\nCMD echo hi" > Dockerfile
+      #    docker build -t ${{ secrets.CR_REGISTRY }}/globalnet-app/hello:ci .
+      #    docker push ${{ secrets.CR_REGISTRY }}/globalnet-app/hello:ci
